@@ -1,0 +1,166 @@
+<html>
+<head>
+    <title>hello</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="\static\stupidtable.js"></script>
+    <script src="\static\jquery.bracket.min.js"></script>
+    <link rel=stylesheet type="text/css" href="\static\jquery.bracket.min.css"></script>
+
+<script>
+
+//method to generate table html
+function makeTable(data, $c, $r, n) {
+        $c.empty();
+        $r.empty();
+    for (i = 0; i < data[0].length; i++) {
+        $c.append("<th data-sort=" + data[0][i] + ">" + data[1][i] + "</th>");
+    }
+
+    for(i = 2; i < data.length; i++){
+        $r.append("<tr id = " + n + "-"+ i + ">");
+        for(j = 0; j < data[0].length; j++){
+        $("#" + n + "-" + i).append("<td>" + data[i][j] +"</td>");
+        }
+        $r.append("</tr>");
+    }
+}
+
+//method for 'records and points' table and either overall playoff record table or playoff bracket
+$(document).ready(function(){
+
+	$("#leagueChangeButton").click(function(){
+			
+			$.ajax({
+				type : 'POST',
+				url : '/changeleague',
+				data : {'leagueChosen' : $("#leagueSelect").val(), 'gather' : $("#yearSelect").val()}
+			})
+
+			.done(function(data){
+				$('#teamSelect').empty()
+
+				leagueTeams = data['leagueTeams']
+
+				for (i = 0; i < leagueTeams.length; i++ ){
+					$('#teamSelect').append("<option>" + leagueTeams[i] + "</option>")
+				}
+				$("#currentTeam").text("Current team =  " + leagueTeams[0]);
+
+                $("#leagueTables").show();
+
+                makeTable(data['leagueA'], $("#catA"), $("#rowA"), "A");
+
+                var currBracket = {
+                        teams : data['bracketTeams'],
+                        results : data['bracketResults']
+                    };
+                console.log(currBracket);
+
+
+                if(data['status'] == "SHOW"){
+                    $("#tableB").show();
+                    $("#bracket").hide();
+                    makeTable(data['leagueC'], $("#catB"), $("#rowB"), "B");
+                }
+                else{
+
+                    $("#tableB").hide();
+                    $("#bracket").show();
+                    
+                    $(function() {
+                        $('#bracket').bracket({
+                            skipConsolationRound : true,
+                            init: currBracket})
+                    });
+                }
+			});
+		});
+
+    //jquery method for 'records and points (ranks)' and 'best players' tables
+	$("#teamChangeButton").click(function(){
+		
+			$.ajax({
+				type : 'POST',
+				url : '/changeteam',
+				data : {'teamChosen' : $("#teamSelect").val(), 'gather' : $("#yearSelect").val()}
+			})
+
+			.done(function(data){
+				$("#currentTeam").text("Current team =  " + data['newTeam']);
+                $("#teamTables").show();
+
+                makeTable(data['teamD'], $("#catD"), $("#rowD"), "D");
+                makeTable(data['teamE'], $("#catE"), $("#rowE"), "E");   
+      
+			});
+		});   
+});
+</script>
+<script>
+            $(function(){
+            $("#tableA").stupidtable();
+            $("#tableB").stupidtable();
+            $("#tableD").stupidtable();
+            $("#tableE").stupidtable();
+           console.log("start");
+        });
+
+</script>
+<style>
+    
+    table, th, td {
+        border : solid black;
+        padding : 1px;
+        text-align: center;
+        
+    } 
+    
+</style>
+
+</head>
+
+<body>
+
+    <style>
+        th[data-sort]{
+      cursor:pointer;
+    }
+    </style>
+
+	League<br>
+	<select name="leagueChoose" id="leagueSelect">
+		<option value="{{league1}}">{{league1Name}}</option>
+		<option value="{{league2}}">{{league2Name}}</option>
+	</select> <br>
+
+    Year<br>
+    <select id="yearSelect">
+        <option value="2016">2016</option>
+        <option value="2017">2017</option>
+        <option value="2018">2018</option>
+        <option value="2019">2019</option>
+        <option value="2020">2020</option>
+        <option value="ALL">ALL</option>
+    </select>
+    <button id="leagueChangeButton">Submit</button><br>
+
+    <div id="leagueTables" hidden>
+        <table id = "tableA"><thead><tr><th>Records and Points</th></tr><tr id = "catA"></tr></thead><tbody id = "rowA"></tbody></table>
+        <table id = "tableB"><thead><tr><th>Playoff Statistics</th></tr><tr id = "catB"></tr></thead><tbody id = "rowB"></tbody></table>
+    </div><br>
+
+    <div id="bracket" hidden></div>
+
+    Team<br>
+	<select id="teamSelect">
+	</select>
+    <button id="teamChangeButton">Submit</button><br>
+    <p id="currentTeam"></p>
+    <div id="teamTables" hidden>
+        <table id = "tableD"><thead><tr><th>Records and Points (Ranks)</th></tr><tr id = "catD"></tr></thead><tbody id = "rowD"></tbody></table>
+        <table id = "tableE"><thead><tr><th>Best Players</th></tr><tr id = "catE"></tr></thead><tbody id = "rowE"></tbody></table>
+    </div>
+
+</body>
+</html>
