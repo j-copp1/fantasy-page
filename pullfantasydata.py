@@ -5,12 +5,12 @@ import os
 def main(argv): #JL or GT
 
     #Credentials
-    _espn_s2 = 'AEAfD%2BTbGT7MYorBGLJqXNLHeoC9YwEmvDAz2wPaDOSqr%2FOxhjSvSGzDa9M%2BuA5euIL9Ads3KOUEeuoWZDRhUmLR%2FOjTSD12Sqv8GQf4syG9RIAqsy2UptZ%2BRBrkdTV2Un6XHkMp12sEwRiaenACwU7c%2Bj1bEaB13K8gtWs7JLjl4SDS1uGbONreGnmB320TjRiyirbfIcGBYhO5v35aK2RG9Ds5joKzKv8vihCg9F9d1QI2Fn6msqC%2BlP8Qnu3%2FuLgTMFr2ek9qKe6pF6ZWsalg'
-    _swid = '{7A50A3CE-1025-452A-90A3-CE1025A52A7A}'
+    _espn_s2 = ''
+    _swid = ''
 
     #League IDs
-    JusticeLeague = '1723918'
-    GTLeague = '63128'
+    JusticeLeague = ''
+    GTLeague = ''
     LEAGUENAME=  ''
     REALTIME = int(argv[2]) #current week
     currentLeague = ''
