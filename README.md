@@ -1,9 +1,13 @@
 ## fantasy-page
 
+###
+Web page for displaying current and historicaldata for my fantasy football leagues.
+
 ### Built With
 * Python
 * [espn_api](https://github.com/cwendt94/espn-api)
 * [Flask](https://github.com/pallets/flask)
+* jQuery
 * SQLite
 * Docker
 
